@@ -8,6 +8,7 @@ import edu.nju.hostelworld.util.DateTrans;
 
 public class Main {
     public static void main(String[] args) {
+      // 修改一下
      //key 测试旅馆创建
         HostelServiceImpl hs1=new HostelServiceImpl();
         Hostel hostelTest=hs1.InitiateHostel("Garden hotel","earth",0.0);
