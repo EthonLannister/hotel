@@ -7,9 +7,7 @@ public class Room {
     private String id;
     private int type;
     private double price;
-    //private String address;
     private int num;
-    //private List<Live> lives;
     private List<Reserve> reserves;
     private Hostel hostel;
     private Timestamp startDate;
@@ -17,13 +15,11 @@ public class Room {
     private static final double BFMoney = 50.0;
 
     private Map<Timestamp, Timestamp> ReservedDates;
-    //private List<Timestamp> Dates;
 
     public Room(String id, int type, double price) {
         this.id = id;
         this.type = type;
         this.price = price;
-        //this.hostel=hostel;
         this.setReserves(new ArrayList<>());
         this.setReservedDates();
     }
@@ -99,7 +95,6 @@ public class Room {
         if (type != room.type) return false;
         if (Double.compare(room.price, price) != 0) return false;
         if (num != room.num) return false;
-        //if (!Objects.equals(address, room.address)) return false;
 
         return true;
     }
@@ -121,12 +116,9 @@ public class Room {
     public void setReservedDates() {
         ReservedDates = new HashMap<Timestamp, Timestamp>();
         List<Reserve> resList = getReserves();
-        //System.out.println("Reserves size: " + resList.size());
         for (Reserve res : resList) {
-            //List<Timestamp> dates=res.getDates();
             Timestamp start = res.getStartDate();
             Timestamp end = res.getEndDate();
-            //System.out.println("Start: " + start + ", End: " + end);
             ReservedDates.put(start, end);
         }
     }
@@ -138,9 +130,7 @@ public class Room {
 
     @Override
     public String toString() {
-        String print = "ID:" + getId() + "\nType:" + getType() + "\nPrice:" + getPrice() + "\nStart Date:" + getStartDate() + "\nEnd Date:" + getEndDate() + "\nReserves:" + getReserves()
-                //+"\nHostel:"+getHostel()
-                ;
+        String print = "ID:" + getId() + " " + "Type:" + getType() + " " + "Price:" + getPrice() + " " + "Start Date:" + getStartDate() + " " + "End Date:" + getEndDate() + " " + "Reserves:" + getReserves() + "\n";
         return print;
     }
 

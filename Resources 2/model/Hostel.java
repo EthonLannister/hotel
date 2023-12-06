@@ -1,13 +1,11 @@
 package edu.nju.hostelworld.model;
 
-import edu.nju.hostelworld.util.DateTrans;
-
-import java.sql.Timestamp;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.*;
-//import
 
 public class Hostel {
-    //private int id;
     private String hostelName;
     private String password;
     private List<Room> rooms;
@@ -15,17 +13,11 @@ public class Hostel {
     private double balance;
     private List<Activity> activity;
 
-    //private Map<String, List<User>> activityMap;
-    //private static int ActivityCapacity=2;
-
-    public Hostel(String hostelName){
+    public Hostel(String hostelName) {
         this.hostelName = hostelName;
-        //this.password = password;
-        //rooms=new List<Room>();
         this.setRooms(new ArrayList<>());
         this.setActivity(new ArrayList<>());
-        this.InitialSetRoom();
-        //this.activityMap = new HashMap<>();
+        //this.InitialSetRoom();
     }
 
 
@@ -53,6 +45,7 @@ public class Hostel {
     public void setAddress(String address) {
         this.address = address;
     }
+
     public double getBalance() {
         return balance;
     }
@@ -70,28 +63,28 @@ public class Hostel {
 
         //if (id != hostel.id) return false;
         if (!Objects.equals(hostelName, hostel.hostelName)) return false;
-        if (!Objects.equals(password, hostel.password)) return false;
-
-        return true;
+        return Objects.equals(password, hostel.password);
     }
+
     @Override
-    public String toString(){
-        String print="Names:"+getHostelName() +"\nAddress:"+getAddress() +"\nBalance:"+getBalance() +"\nRoom list:"+printRooms();
+    public String toString() {
+        String print = "Names:" + getHostelName() + "\nAddress:" + getAddress() + "\nBalance:" + getBalance() + "\nRoom list:" + printRooms();
         return print;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(hostelName,password);
+        return Objects.hash(hostelName, password);
     }
 
     public List<Room> getRooms() {
         return rooms;
     }
-    public List<String> printRooms(){
+
+    public List<String> printRooms() {
         List<String> RoomIdList = new ArrayList<String>();
-        for(Room room:getRooms()){
-            String id=room.getId();
+        for (Room room : getRooms()) {
+            String id = room.getId();
             RoomIdList.add(id);
         }
         return RoomIdList;
@@ -109,42 +102,125 @@ public class Hostel {
         this.activity = activity;
     }
 
+/*
     public void AddRoom(String id, int type, double price,
-                                Timestamp start, Timestamp end){
-        Room room = new Room(id,type,price);
+                        Timestamp start, Timestamp end) {
+        Room room = new Room(id, type, price);
         room.setStartDate(start);
         room.setEndDate(end);
 
-        //hostel.setRooms(room);
-        List<Room> roomList=getRooms();
+        List<Room> roomList = getRooms();
         roomList.add(room);
         setRooms(roomList);
-        //return room;
-        //todo 存入文件
     }
 
-    /*List<Room> RoomList= new ArrayList<>(Arrays.asList(
-            "room001",0,100.0,DateTrans.string2time("2023-12-01 00:00:00"),DateTrans.string2time("2024-01-01 00:00:00")
-    ));
 
-     */
-    public void InitialSetRoom(){
-        //Hostel hostel=getHostel();
-        AddRoom("room001",0,100.0,DateTrans.string2time("2023-12-01 00:00:00"),DateTrans.string2time("2024-01-01 00:00:00"));
-        AddRoom("room002",1,200.0,DateTrans.string2time("2023-12-01 00:00:00"),DateTrans.string2time("2023-12-20 00:00:00"));
-        AddRoom("room003",2,300.0,DateTrans.string2time("2023-12-01 00:00:00"),DateTrans.string2time("2023-12-10 00:00:00"));
+    public void InitialSetRoom() {
+        AddRoom("room001", 0, 100.0, DateTrans.string2time("2023-12-01 00:00:00"), DateTrans.string2time("2024-01-01 00:00:00"));
+        AddRoom("room002", 1, 200.0, DateTrans.string2time("2023-12-01 00:00:00"), DateTrans.string2time("2023-12-20 00:00:00"));
+        AddRoom("room003", 2, 300.0, DateTrans.string2time("2023-12-01 00:00:00"), DateTrans.string2time("2023-12-10 00:00:00"));
     }
+*/
 
     //1. 打印所有房间信息
     public void printAllRoomsInfo() {
         List<Room> rooms = getRooms();
         if (rooms != null && !rooms.isEmpty()) {
             for (Room room : rooms) {
-                System.out.println(room.toString()); // 直接调用 Room 的 toString 方法
+                // 拼接房间信息为一行字符串
+                StringBuilder roomInfo = new StringBuilder();
+                roomInfo.append("Room ID: ").append(room.getId())
+                        .append(", Type: ").append(room.getType())
+                        .append(", Price: ").append(room.getPrice())
+                        .append(", Start Date: ").append(room.getStartDate())
+                        .append(", End Date: ").append(room.getEndDate());
+
+                System.out.println(roomInfo.toString());
             }
         } else {
             System.out.println("No rooms available in this hostel.");
         }
     }
 
+    //通过文档输出
+    public static class RoomInformationReader {
+        public static List<Room> readRoomInformation(String filePath) {
+            List<Room> rooms = new ArrayList<>();
+
+            try {
+                File file = new File(filePath);
+                Scanner scanner = new Scanner(file);
+
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+                    String[] roomInfo = line.split(",");
+
+                    String id = roomInfo[0];
+                    int type = Integer.parseInt(roomInfo[1]);
+                    double price = Double.parseDouble(roomInfo[2]);
+
+                    Room room = new Room(id, type, price);
+                    rooms.add(room);
+                }
+
+                scanner.close();
+            } catch (FileNotFoundException e) {
+                System.out.println("文件不存在或无法读取！");
+                e.printStackTrace();
+            }
+
+            return rooms;
+        }
+
+        //读文档
+        public static List<Room> readRoomInfoFromFile(String fileName) {
+            List<Room> rooms = new ArrayList<>();
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    String[] parts = line.split(",");
+                    String id = parts[0].trim();
+                    int type = Integer.parseInt(parts[1].trim());
+                    double price = Double.parseDouble(parts[2].trim());
+
+                    Room room = new Room(id, type, price);
+                    // 设置其他属性...
+
+                    rooms.add(room);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return rooms;
+        }
+
+        //写文档
+        public static void writeRoomInfoToDocument(List<Room> rooms, String fileName) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+                for (Room room : rooms) {
+                    writer.write("ID: " + room.getId());
+                    writer.newLine();
+                    writer.write("Type: " + room.getType());
+                    writer.newLine();
+                    writer.write("Price: " + room.getPrice());
+                    writer.newLine();
+                    writer.write("Start Date: " + room.getStartDate());
+                    writer.newLine();
+                    writer.write("End Date: " + room.getEndDate());
+                    writer.newLine();
+                    // 写入其他属性...
+
+                    writer.newLine();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+    }
 }
+
+
