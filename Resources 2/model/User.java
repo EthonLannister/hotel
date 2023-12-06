@@ -9,6 +9,8 @@ public class User {
     private String password;
     private int level;
     private double balance;
+
+    private Admin assignedAdmin; // 用于保存分配的管理员信息
     private List<Reserve> reserves;
     private Map<Timestamp, Timestamp> ReservedDates;
     private int status;
@@ -29,6 +31,14 @@ public class User {
         this.setReservedDates();
         this.status = 0;
         //this.cardId = cardId;
+    }
+
+    public Admin getAssignedAdmin() {
+        return assignedAdmin;
+    }
+
+    public void setAssignedAdmin(Admin admin) {
+        this.assignedAdmin = admin;
     }
 
     public String getId() {
