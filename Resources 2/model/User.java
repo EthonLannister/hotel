@@ -32,6 +32,7 @@ public class User {
         this.status = 0;
         //this.cardId = cardId;
     }
+    public User(){}
 
     public Admin getAssignedAdmin() {
         return assignedAdmin;
