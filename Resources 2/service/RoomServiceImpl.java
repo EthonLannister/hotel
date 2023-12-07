@@ -4,11 +4,14 @@ import edu.nju.hostelworld.model.*;
 
 import java.sql.Timestamp;
 import java.util.*;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 
-import static edu.nju.hostelworld.model.Activity.getCapacity;
 import static edu.nju.hostelworld.util.DateTrans.getDaysBetween;
 import static edu.nju.hostelworld.util.DateTrans.*;
 import static edu.nju.hostelworld.model.DiscountStrategy.*;
+import static edu.nju.hostelworld.model.Activity.ActivityInformationReader;
 
 public class RoomServiceImpl {
 
@@ -281,25 +284,27 @@ public class RoomServiceImpl {
     }
 
     public void addParticipant(Hostel hostel, String activityName, User user) {
-        //Hostel hostel = new Hostel(hostelName);
         UserServiceImpl usi = new UserServiceImpl();
         List<Activity> activityList = hostel.getActivities();
         int flag = 0;
         for (Activity act : activityList) {
-            if (Objects.equals(act.getActName(), activityName) && act.getActUser().size() < getCapacity() && !usi.IsDateInHotel(user, act.getActTime())) {
+            if (Objects.equals(act.getActName(), activityName) && act.getActUser().size() < act.getCapacity() && !usi.IsDateInHotel(user, act.getActTime())) {
+                // 将预订客户写入文档
+                ActivityInformationReader reader = new ActivityInformationReader();
+                reader.writeActivityToDocument(Collections.singletonList(act), "activity_info.txt");
                 act.addActUser(user);
                 System.out.println("Activity successfully booked!");
                 flag = 1;
-            } else if (Objects.equals(act.getActName(), activityName) && act.getActUser().size() >= getCapacity()) {
+            } else if (Objects.equals(act.getActName(), activityName) && act.getActUser().size() >= act.getCapacity()) {
                 System.out.println("Sorry, this activity is full");
                 flag = 1;
-            } else if (Objects.equals(act.getActName(), activityName) && act.getActUser().size() < getCapacity() && usi.IsDateInHotel(user, act.getActTime())) {
+            } else if (Objects.equals(act.getActName(), activityName) && act.getActUser().size() < act.getCapacity() && usi.IsDateInHotel(user, act.getActTime())) {
                 System.out.println("Sorry,you're not in hotel at this time");
                 flag = 1;
             }
         }
         if (flag == 0) {
-            System.out.println("Sorry,activity doesnt exist");
+            System.out.println("Sorry,activity doesn't exist");
         }
     }
 

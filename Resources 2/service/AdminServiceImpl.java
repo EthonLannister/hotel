@@ -1,11 +1,10 @@
 package edu.nju.hostelworld.service;
 
-import edu.nju.hostelworld.model.Admin;
-import edu.nju.hostelworld.model.Reserve;
-import edu.nju.hostelworld.model.Room;
-import edu.nju.hostelworld.model.User;
+import edu.nju.hostelworld.model.*;
+
 import java.sql.Timestamp;
 import static edu.nju.hostelworld.util.DateTrans.getDaysBetween;
+import static edu.nju.hostelworld.model.Activity.ActivityInformationReader;
 import static edu.nju.hostelworld.util.DateTrans.*;
 import java.util.Random;
 import java.util.*;
@@ -116,6 +115,23 @@ public class AdminServiceImpl implements AdminService{
         double refundMoney = reserve.getPayMoney() / 2;
         user = userService.addBalance(user, refundMoney);
     }
+    // 添加活动
+    public boolean addActivity(Hostel hostel, String actName, Timestamp actTime, int capacity, List<User> actUser) {
+        HostelServiceImpl hostelService = new HostelServiceImpl();
+        Activity activity = hostelService.addActivity(hostel, actName, actTime, capacity, actUser);
+        if (activity == null) {
+            System.out.println("活动添加失败！");
+            return false;
+        }
+        ActivityInformationReader reader = new ActivityInformationReader();
+        List<Activity> activities = reader.readActivityInformation("activity_info.txt");
+        activities.add(activity);
+        // 调用writeActivityToDocument方法，将活动信息保存到文档中
+        reader.writeActivityToDocument(activities, "activity_info.txt");
+        System.out.println("活动添加成功！");
+        return true;
+    }
+
 
 
 }
