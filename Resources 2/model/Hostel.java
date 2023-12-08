@@ -1,6 +1,7 @@
 package edu.nju.hostelworld.model;
 
 import java.io.*;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.*;
@@ -122,105 +123,9 @@ public class Hostel {
     }
 */
 
-    //1. 打印所有房间信息
-    public void printAllRoomsInfo() {
-        List<Room> rooms = getRooms();
-        if (rooms != null && !rooms.isEmpty()) {
-            for (Room room : rooms) {
-                // 拼接房间信息为一行字符串
-                StringBuilder roomInfo = new StringBuilder();
-                roomInfo.append("Room ID: ").append(room.getId())
-                        .append(", Type: ").append(room.getType())
-                        .append(", Price: ").append(room.getPrice())
-                        .append(", Start Date: ").append(room.getStartDate())
-                        .append(", End Date: ").append(room.getEndDate());
-
-                System.out.println(roomInfo.toString());
-            }
-        } else {
-            System.out.println("No rooms available in this hostel.");
-        }
-    }
 
     //通过文档输出
-    public static class RoomInformationReader {
-        public static List<Room> readRoomInformation(String filePath) {
-            List<Room> rooms = new ArrayList<>();
 
-            try {
-                File file = new File(filePath);
-                Scanner scanner = new Scanner(file);
-
-                while (scanner.hasNextLine()) {
-                    String line = scanner.nextLine();
-                    String[] roomInfo = line.split(",");
-
-                    String id = roomInfo[0];
-                    int type = Integer.parseInt(roomInfo[1]);
-                    double price = Double.parseDouble(roomInfo[2]);
-
-                    Room room = new Room(id, type, price);
-                    rooms.add(room);
-                }
-
-                scanner.close();
-            } catch (FileNotFoundException e) {
-                System.out.println("文件不存在或无法读取！");
-                e.printStackTrace();
-            }
-
-            return rooms;
-        }
-
-        //读文档
-        public static List<Room> readRoomInfoFromFile(String fileName) {
-            List<Room> rooms = new ArrayList<>();
-
-            try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    String[] parts = line.split(",");
-                    String id = parts[0].trim();
-                    int type = Integer.parseInt(parts[1].trim());
-                    double price = Double.parseDouble(parts[2].trim());
-
-                    Room room = new Room(id, type, price);
-                    // 设置其他属性...
-
-                    rooms.add(room);
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            return rooms;
-        }
-
-        //写文档
-        public static void writeRoomInfoToDocument(List<Room> rooms, String fileName) {
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
-                for (Room room : rooms) {
-                    writer.write("ID: " + room.getId());
-                    writer.newLine();
-                    writer.write("Type: " + room.getType());
-                    writer.newLine();
-                    writer.write("Price: " + room.getPrice());
-                    writer.newLine();
-                    writer.write("Start Date: " + room.getStartDate());
-                    writer.newLine();
-                    writer.write("End Date: " + room.getEndDate());
-                    writer.newLine();
-                    // 写入其他属性...
-
-                    writer.newLine();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-
-        }
-    }
 }
 
 

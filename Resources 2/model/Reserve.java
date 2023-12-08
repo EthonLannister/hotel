@@ -1,18 +1,17 @@
 package edu.nju.hostelworld.model;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.io.*;
 
 import static edu.nju.hostelworld.model.Room.getBFMoney;
 import static edu.nju.hostelworld.util.DateTrans.getDaysBetween;
 import static edu.nju.hostelworld.util.DateTrans.time2String;
 
-/**
- * Created by yyy on 2017/3/26.
- */
 public class Reserve {
     private final String ReserveId;
     private Timestamp startDate;
@@ -21,7 +20,6 @@ public class Reserve {
     private User user;
     private Room room;
     private double payMoney;
-    //private double BFMoney=50.0;
 
     private int IsBreakfast;
 
@@ -36,6 +34,18 @@ public class Reserve {
         //this.setDates(startDate,endDate);
     }
 
+    //test构造方法
+    public Reserve(String ReserveId, LocalDate startDate, LocalDate endDate, int roomNum, User user, Room room, int payMoney, boolean isBreakfast) {
+        this.ReserveId = ReserveId;
+        this.startDate = Timestamp.valueOf(startDate.atStartOfDay());
+        this.endDate = Timestamp.valueOf(endDate.atStartOfDay());
+        this.roomNum = roomNum;
+        this.user = user;
+        this.room = room;
+        this.payMoney = room.getPrice() + getBFMoney() * (isBreakfast ? 1 : 0);
+    }
+
+
     public String getReserveId() {
         return ReserveId;
     }
@@ -46,7 +56,6 @@ public class Reserve {
     }
 
      */
-    //key 有必要吗？ReserveId 唯一，无需重设
 
     public Timestamp getStartDate() {
         return startDate;
@@ -129,5 +138,36 @@ public class Reserve {
     public void setRoom(Room roomByRoomId) {
         this.room = roomByRoomId;
     }
+
+
+    public static class ReserveFileIO {
+
+        private static final String FILE_PATH = "reserve_info.txt";
+
+        public static void saveReserves(List<Reserve> reserves) {
+            try (OutputStream fileOut = new FileOutputStream(FILE_PATH);
+                 ObjectOutputStream objectOut = new ObjectOutputStream(fileOut)) {
+                objectOut.writeObject(reserves);
+                System.out.println("Reserves saved successfully.");
+            } catch (IOException e) {
+                System.out.println("Failed to save reserves: " + e.getMessage());
+            }
+        }
+
+        public static List<Reserve> loadReserves() {
+            List<Reserve> reserves = new ArrayList<>();
+            try (InputStream fileIn = new FileInputStream(FILE_PATH);
+                 ObjectInputStream objectIn = new ObjectInputStream(fileIn)) {
+                reserves = (List<Reserve>) objectIn.readObject();
+                System.out.println("Reserves loaded successfully.");
+            } catch (IOException | ClassNotFoundException e) {
+                System.out.println("Failed to load reserves: " + e.getMessage());
+            }
+            return reserves;
+        }
+    }
+
+
+
 
 }

@@ -1,6 +1,7 @@
 package edu.nju.hostelworld.model;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Room {
@@ -24,6 +25,15 @@ public class Room {
         this.setReservedDates();
     }
 
+    public  Room(String id, int type, double price, Timestamp startDate, Timestamp endDate){
+        this.id = id;
+        this.type = type;
+        this.price = price;
+        this.endDate = endDate;
+        this.startDate = startDate;
+        this.setReserves(new ArrayList<>());
+        this.setReservedDates();
+    }
     public String getId() {
         return id;
     }
@@ -127,11 +137,26 @@ public class Room {
         return ReservedDates;
     }
 
+    // 在 Room 类中添加一个新的方法，用于格式化时间
+    public static String formatTimestamp(Timestamp timestamp) {
+        if (timestamp != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            return sdf.format(timestamp);
+        } else {
+            return "null";
+        }
+    }
 
+
+    // 修改 toString 方法，使用上面新添加的方法来格式化时间
     @Override
     public String toString() {
-        String print = "ID:" + getId() + " " + "Type:" + getType() + " " + "Price:" + getPrice() + " " + "Start Date:" + getStartDate() + " " + "End Date:" + getEndDate() + " " + "Reserves:" + getReserves() + "\n";
-        return print;
+        return "ID: " + id +
+                " Type: " + type +
+                " Price: " + price +
+                " Start Date: " + formatTimestamp(startDate) +
+                " End Date: " + formatTimestamp(endDate) +
+                " Reserves: " + reserves.toString() + "\n";
     }
 
 

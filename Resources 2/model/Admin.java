@@ -23,6 +23,7 @@ public class Admin {
         this.password = password;
         this.users = new ArrayList<>();
     }
+    public Admin(){}
     public String getId() {return id;}
 
     public void setId(String id) {

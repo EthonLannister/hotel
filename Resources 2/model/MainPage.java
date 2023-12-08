@@ -1,5 +1,10 @@
 package edu.nju.hostelworld.model;
 
+import edu.nju.hostelworld.service.HostelServiceImpl;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -31,18 +36,24 @@ public class MainPage {
             // 读取用户信息文件进行验证
             String userCredentialsFile = (userType.equals("1")) ? "user_credentials.txt" : "admin_credentials.txt";
             boolean userFound = false;
+            String foundUsername = "";
+            int foundLevel = 0;
+            double foundBalance = 0.0;
 
             BufferedReader bufferedReader = null;
             try {
                 bufferedReader = new BufferedReader(new FileReader(userCredentialsFile));
                 String line;
                 while ((line = bufferedReader.readLine()) != null) {
-                    String[] data = line.split(" ");
+                    String[] data = line.split(",");
                     String id = data[0];
-                    String userPassword = data[1];
+                    String userPassword = data[2];
 
                     if (userId.equals(id) && password.equals(userPassword)) {
                         userFound = true;
+                        foundUsername = data[1];
+                        foundLevel = Integer.parseInt(data[3]);
+                        foundBalance = Double.parseDouble(data[4]);
                         break;
                     }
                 }
@@ -59,11 +70,22 @@ public class MainPage {
             }
 
             if (userFound) {
-                System.out.println("欢迎，" + ((userType.equals("1")) ? "用户" : "管理员") + " " + userId + "！");
+                System.out.println("欢迎，" + ((userType.equals("1")) ? "用户" : "管理员") + " " + foundUsername + "！");
                 if (userType.equals("1")) {
-                    showUserMenu(scanner);
+                    // 创建User对象并将属性值赋给它
+                    User thisUser = new User();
+                    thisUser.setId(userId);
+                    thisUser.setUsername(foundUsername);
+                    thisUser.setPassword(password);
+                    thisUser.setLevel(foundLevel);
+                    thisUser.setBalance(foundBalance);
+
+                    showUserMenu(scanner, thisUser);
                 } else {
-                    showAdminMenu(scanner);
+                    //创建Admin对象并将属性赋值给它
+                    //ToDo 管理员界面的操作都通过thisAdmin对象来
+                    Admin thisAdmin = new Admin();
+                    showAdminMenu(scanner, thisAdmin);
                 }
                 break; // 登录成功，跳出循环
             } else {
@@ -72,21 +94,33 @@ public class MainPage {
         }
     }
 
-    public static void showUserMenu(Scanner scanner) {
+    //显示用户操作界面
+    public static void showUserMenu(Scanner scanner, User user) {
         while (true) {
             System.out.println("请选择操作：");
-            System.out.println("1. 酒店房间");
-            System.out.println("2. 个人信息");
-            System.out.println("3. 退出");
+            System.out.println("1. 预定酒店");
+            System.out.println("2. 查看个人信息");
+            System.out.println("3. 查看预定记录");
+            System.out.println("4. 退出");
             int choice = scanner.nextInt();
             switch (choice) {
                 case 1:
-                    System.out.println("进入酒店房间页面。");
+                    System.out.println("Please enter the reservation time：");
+                    LocalDate startDate = getUserInputDate("Start date (YYYY-MM-DD): ");
+                    LocalDate endDate = getUserInputDate("End date (YYYY-MM-DD): ");
+                    System.out.println("Please enter the level of the room(1-$200,2-$400,3-$600):");
+                    int printLevel = scanner.nextInt();
+                    hotelReservation(startDate, endDate, printLevel);
+
+
                     break;
                 case 2:
                     System.out.println("进入个人信息页面。");
                     break;
                 case 3:
+                    System.out.println("进入预订记录页面。");
+                    break;
+                case 4:
                     return;
                 default:
                     System.out.println("输入无效，请重新选择。");
@@ -94,7 +128,8 @@ public class MainPage {
         }
     }
 
-    public static void showAdminMenu(Scanner scanner) {
+    //显示管理员页面
+    public static void showAdminMenu(Scanner scanner, Admin admin) {
         while (true) {
             System.out.println("请选择操作：");
             System.out.println("1. 酒店房间");
@@ -119,4 +154,71 @@ public class MainPage {
             }
         }
     }
+
+    public static void showAllRooms() {
+        List<Room> rooms = HostelServiceImpl.RoomInformationReader.readRoomInformation("room_info.txt");
+        for (Room room : rooms) {
+            System.out.print(room.toString());
+        }
+    }
+
+    public static void hotelReservation(LocalDate startDate, LocalDate endDate, int printLevel) {
+        String roomListFile = "room_info.txt";
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(roomListFile))) {
+            String line;
+            boolean foundAvailableRoom = false;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] roomData = line.split(",");
+                int roomId = Integer.parseInt(roomData[0]);
+                int roomType = Integer.parseInt(roomData[1]);
+                double roomPrice = Double.parseDouble(roomData[2]);
+                LocalDate roomStartDate = LocalDate.parse(roomData[3], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                LocalDate roomEndDate = LocalDate.parse(roomData[4], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+                String roomAddress = roomData[5];
+                String roomLocation = roomData[6];
+
+                if (startDate.isAfter(roomStartDate) && endDate.isBefore(roomEndDate) && printLevel == roomType) {
+                    foundAvailableRoom = true;
+                    System.out.println("Available Room - Room ID: " + roomId);
+                    System.out.println("Start Date: " + roomStartDate);
+                    System.out.println("End Date: " + roomEndDate);
+                    System.out.println("Price: " + roomPrice);
+                    System.out.println("Address: " + roomAddress);
+                    System.out.println("Location: " + roomLocation);
+                    System.out.println();
+                }
+            }
+
+            if (!foundAvailableRoom) {
+                System.out.println("No available rooms for the selected dates.");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private static LocalDate getUserInputDate(String message) {
+        Scanner scanner = new Scanner(System.in);
+        LocalDate date = null;
+        while (date == null) {
+            System.out.print(message);
+            String input = scanner.nextLine();
+            try {
+                if (input.contains("-")) {
+                    date = LocalDate.parse(input, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+                } else if (input.contains("/")) {
+                    date = LocalDate.parse(input, DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+                } else {
+                    date = LocalDate.parse(input, DateTimeFormatter.ofPattern("yyyy MM dd"));
+                }
+            } catch (Exception e) {
+                System.out.println("Invalid date format. Please try again.");
+            }
+        }
+        return date;
+    }
+
 }
