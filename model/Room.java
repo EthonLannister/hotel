@@ -8,7 +8,7 @@ public class Room {
     private int type;
     private double price;
     //private String address;
-    private int num;
+    //private int num;
     //private List<Live> lives;
     private List<Reserve> reserves;
     private Hostel hostel;
@@ -64,6 +64,7 @@ public class Room {
         return BFMoney;
     }
 
+    /*
     public int getNum() {
         return num;
     }
@@ -71,6 +72,8 @@ public class Room {
     public void setNum(int num) {
         this.num = num;
     }
+
+     */
 
     public Timestamp getStartDate() {
         return startDate;
@@ -98,7 +101,7 @@ public class Room {
         if (id != room.id) return false;
         if (type != room.type) return false;
         if (Double.compare(room.price, price) != 0) return false;
-        if (num != room.num) return false;
+        //if (num != room.num) return false;
         //if (!Objects.equals(address, room.address)) return false;
 
         return true;

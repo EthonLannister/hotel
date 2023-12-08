@@ -17,7 +17,7 @@ public class Reserve {
     private final String ReserveId;
     private Timestamp startDate;
     private Timestamp endDate;
-    private int roomNum;
+    //private int roomNum;
     private User user;
     private Room room;
     private double payMoney;
@@ -25,11 +25,11 @@ public class Reserve {
 
     private int IsBreakfast;
 
-    public Reserve(String ReserveId,Timestamp start,Timestamp end,int roomNum,User user,Room room,int IsBreakfast){
+    public Reserve(String ReserveId,Timestamp start,Timestamp end,User user,Room room,int IsBreakfast){
         this.ReserveId = ReserveId;
         this.startDate = start;
         this.endDate = end;
-        this.roomNum = roomNum;
+        //this.roomNum = roomNum;
         this.user = user;
         this.room = room;
         this.payMoney = room.getPrice()+getBFMoney()*IsBreakfast;
@@ -65,6 +65,7 @@ public class Reserve {
         this.endDate = leaveDate;
     }
 
+    /*
     public int getRoomNum() {
         return roomNum;
     }
@@ -72,6 +73,8 @@ public class Reserve {
     public void setRoomNum(int roomNum) {
         this.roomNum = roomNum;
     }
+
+     */
 
     public double getPayMoney(){
         return payMoney;
@@ -95,7 +98,7 @@ public class Reserve {
 
         if (ReserveId != reserve.ReserveId) return false;
         //if (status != reserve.status) return false;
-        if (roomNum != reserve.roomNum) return false;
+        //if (roomNum != reserve.roomNum) return false;
         if (!Objects.equals(startDate, reserve.startDate)) return false;
         if (!Objects.equals(endDate, reserve.endDate)) return false;
 

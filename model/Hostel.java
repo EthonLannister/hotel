@@ -131,8 +131,8 @@ public class Hostel {
     public void InitialSetRoom(){
         //Hostel hostel=getHostel();
         AddRoom("room001",0,100.0,DateTrans.string2time("2023-12-01 00:00:00"),DateTrans.string2time("2024-01-01 00:00:00"));
-        AddRoom("room002",1,200.0,DateTrans.string2time("2023-12-01 00:00:00"),DateTrans.string2time("2023-12-20 00:00:00"));
-        AddRoom("room003",2,300.0,DateTrans.string2time("2023-12-01 00:00:00"),DateTrans.string2time("2023-12-10 00:00:00"));
+        AddRoom("room002",1,200.0,DateTrans.string2time("2023-12-01 00:00:00"),DateTrans.string2time("2024-01-01 00:00:00"));
+        AddRoom("room003",2,300.0,DateTrans.string2time("2023-12-01 00:00:00"),DateTrans.string2time("2024-01-01 00:00:00"));
     }
 
     //1. 打印所有房间信息

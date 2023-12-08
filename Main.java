@@ -49,9 +49,9 @@ public class Main {
         System.out.println(hostelTest);
 
 
-        Reserve rs1=rm1.reserve("rs001",room1,user1,DateTrans.string2time("2023-12-01 00:00:00"),DateTrans.string2time("2023-12-05 00:00:00"),1,1);
-        Reserve rs2=rm1.reserve("rs002",room2,user1,DateTrans.string2time("2023-12-06 00:00:00"),DateTrans.string2time("2023-12-10 00:00:00"),1,1);
-        Reserve rs3=rm1.reserve("rs003",room3,user2,DateTrans.string2time("2023-12-01 00:00:00"),DateTrans.string2time("2023-12-05 00:00:00"),1,1);
+        Reserve rs1=rm1.reserve("rs001",room1,user1,DateTrans.string2time("2023-12-01 00:00:00"),DateTrans.string2time("2023-12-05 00:00:00"),1);
+        Reserve rs2=rm1.reserve("rs002",room2,user1,DateTrans.string2time("2023-12-06 00:00:00"),DateTrans.string2time("2023-12-10 00:00:00"),1);
+        Reserve rs3=rm1.reserve("rs003",room3,user2,DateTrans.string2time("2023-12-01 00:00:00"),DateTrans.string2time("2023-12-05 00:00:00"),1);
         System.out.println("\n");
         System.out.println(user1);
         System.out.println(user2);
@@ -75,8 +75,8 @@ public class Main {
         System.out.println(room3);
 
 
-        Reserve rs4=rm1.reserve("rs004",room2,user2,DateTrans.string2time("2023-12-06 00:00:00"),DateTrans.string2time("2023-12-10 00:00:00"),1,0);
-        Reserve rs5=rm1.reserve("rs005",room1,user1,DateTrans.string2time("2023-12-06 00:00:00"),DateTrans.string2time("2023-12-10 00:00:00"),1,0);
+        Reserve rs4=rm1.reserve("rs004",room2,user2,DateTrans.string2time("2023-12-06 00:00:00"),DateTrans.string2time("2023-12-10 00:00:00"),0);
+        Reserve rs5=rm1.reserve("rs005",room1,user1,DateTrans.string2time("2023-12-06 00:00:00"),DateTrans.string2time("2023-12-10 00:00:00"),0);
         System.out.println("\n");
         System.out.println(hostelTest);
         System.out.println(user1);
@@ -87,7 +87,7 @@ public class Main {
         System.out.println(room3);
 
         //key 检测修改预订
-        Reserve rs6=rm1.reserve("rs006",room1,user3,DateTrans.string2time("2023-12-06 00:00:00"),DateTrans.string2time("2023-12-10 00:00:00"),1,0);
+        Reserve rs6=rm1.reserve("rs006",room1,user3,DateTrans.string2time("2023-12-06 00:00:00"),DateTrans.string2time("2023-12-10 00:00:00"),0);
         Reserve rs7=rm1.changeReserveDate(rs1,DateTrans.string2time("2023-12-06 00:00:00"),DateTrans.string2time("2023-12-10 00:00:00"));
         Reserve rs8=rm1.changeReserveDate(rs2,DateTrans.string2time("2023-12-01 00:00:00"),DateTrans.string2time("2023-12-05 00:00:00"));
         Reserve rs9=rm1.changeReserveDate(rs3,DateTrans.string2time("2023-12-06 00:00:00"),DateTrans.string2time("2023-12-10 00:00:00"));
@@ -101,10 +101,10 @@ public class Main {
         System.out.println(user3);
 
         //key 测试打折和检测钱是否够
-        Reserve rs10=rm1.reserve("rs007",room1,user1,DateTrans.string2time("2023-12-16 00:00:00"),DateTrans.string2time("2023-12-20 00:00:00"),1,0);
+        Reserve rs10=rm1.reserve("rs007",room1,user1,DateTrans.string2time("2023-12-16 00:00:00"),DateTrans.string2time("2023-12-20 00:00:00"),0);
         System.out.println("\n");
         System.out.println(user1);
-        Reserve rs11=rm1.reserve("rs008",room1,user1,DateTrans.string2time("2023-12-11 00:00:00"),DateTrans.string2time("2023-12-15 00:00:00"),1,0);
+        Reserve rs11=rm1.reserve("rs008",room1,user1,DateTrans.string2time("2023-12-11 00:00:00"),DateTrans.string2time("2023-12-15 00:00:00"),0);
         //System.out.println("\n");
         System.out.println(user1);
         System.out.println(room1);
@@ -131,13 +131,13 @@ public class Main {
         System.out.println(user3);
         us1.VIPTopUp(user2);
         System.out.println(user2);
-        Reserve rs12=rm1.reserve("rs009",room2,user2,DateTrans.string2time("2023-12-11 00:00:00"),DateTrans.string2time("2023-12-15 00:00:00"),1,0);
+        Reserve rs12=rm1.reserve("rs009",room2,user2,DateTrans.string2time("2023-12-11 00:00:00"),DateTrans.string2time("2023-12-15 00:00:00"),0);
         System.out.println(user2);
         rm1.cancelReserve(rs12);
         System.out.println(user2);
         //key 检测不在预订时间
         //System.out.println("\n");
-        Reserve rs13=rm1.reserve("rs010",room3,user2,DateTrans.string2time("2023-12-09 00:00:00"),DateTrans.string2time("2023-12-11 00:00:00"),1,0);
+        Reserve rs13=rm1.reserve("rs010",room3,user2,DateTrans.string2time("2023-12-09 00:00:00"),DateTrans.string2time("2023-12-11 00:00:00"),0);
 
 
         //key 检测升级降级
@@ -156,6 +156,8 @@ public class Main {
         room1=rm1.getRoomById(hostelTest,"room001");
         System.out.println("\n");
         System.out.println(room1);
+
+        //key
 
     }
 }

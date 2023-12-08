@@ -39,9 +39,9 @@ public class RoomServiceImpl {
     }
 
     public Reserve reserve(String ReserveId, Room room, User user, Timestamp start, Timestamp end,
-                           int roomNum, int IsBreakfast) {
+                            int IsBreakfast) {
         // 创建一个预订对象
-        Reserve reserve = new Reserve(ReserveId, start, end, roomNum, user, room, IsBreakfast);
+        Reserve reserve = new Reserve(ReserveId, start, end, user, room, IsBreakfast);
 
         // 调用UserService和HostelService
         UserServiceImpl userService = new UserServiceImpl();
@@ -88,7 +88,7 @@ public class RoomServiceImpl {
                 generateBill(payMoney);
 
                 // 减少房间的可用数量
-                room.setNum(room.getNum() - roomNum);
+                //room.setNum(room.getNum() - roomNum);
 
                 // 将预订添加到房间和用户的预订列表中
                 AddRoomReserve(room, reserve);
@@ -138,13 +138,13 @@ public class RoomServiceImpl {
             long days = getDaysBetween(reserve.getStartDate(), reserve.getEndDate());
             //返还钱
             user = userService.addBalance(user, reserve.getPayMoney());
-            hostel = hostelService.addBalance(hostel, reserve.getPayMoney());
+            hostel = hostelService.reduceBalance(hostel, reserve.getPayMoney());
             //更新待结算账单
 
             //Hostel hostel = room.getHostel();
             //generateBill( * reserve.getPayMoney());
             //客栈房间数增加
-            room.setNum(room.getNum() + reserve.getRoomNum());
+            //room.setNum(room.getNum() + reserve.getRoomNum());
             RemoveRoomReserve(room, reserve);
             RemoveUserReserve(user, reserve);
         }
@@ -193,9 +193,9 @@ public class RoomServiceImpl {
         String ReserveId = reserve.getReserveId();
         Room room = reserve.getRoom();
         User user = reserve.getUser();
-        int roomNum = reserve.getRoomNum();
+        //int roomNum = reserve.getRoomNum();
         int IsBreakfast = reserve.getIsBreakfast();
-        Reserve newReserve = new Reserve(ReserveId, newStart, newEnd, roomNum, user, room, IsBreakfast);
+        Reserve newReserve = new Reserve(ReserveId, newStart, newEnd, user, room, IsBreakfast);
         UserServiceImpl userService = new UserServiceImpl();
         if (!ConflictRoomDateDetect(room, newReserve) && !userService.ConflictUserDateDetect(user, newReserve)) {
             System.out.println("Change successful!");
