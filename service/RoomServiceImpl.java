@@ -1,11 +1,13 @@
 package edu.nju.hostelworld.service;
 
 import edu.nju.hostelworld.model.*;
+import edu.nju.hostelworld.util.myHashMap;
 
 import java.sql.Timestamp;
 import java.util.*;
 
 import static edu.nju.hostelworld.model.Activity.getCapacity;
+import static edu.nju.hostelworld.model.Room.getBFMoney;
 import static edu.nju.hostelworld.util.DateTrans.getDaysBetween;
 import static edu.nju.hostelworld.util.DateTrans.*;
 import static edu.nju.hostelworld.model.DiscountStrategy.*;
@@ -134,7 +136,7 @@ public class RoomServiceImpl {
             HostelServiceImpl hostelService = new HostelServiceImpl();
             Hostel hostel = room.getHostel();
             long days = getDaysBetween(reserve.getStartDate(), reserve.getEndDate());
-            //返还一半的钱
+            //返还钱
             user = userService.addBalance(user, reserve.getPayMoney());
             hostel = hostelService.addBalance(hostel, reserve.getPayMoney());
             //更新待结算账单
@@ -210,7 +212,7 @@ public class RoomServiceImpl {
 
 
     public Map<Room,Double> getUpgradeMap(Reserve reserve) {
-        Map<Room,Double> upgradeMap=new HashMap<>();
+        Map<Room,Double> upgradeMap=new myHashMap<>();
         List<Integer> TypeList = new ArrayList<>(Arrays.asList(0, 1, 2));
         //List<Room> upgradeRooms = new ArrayList<>();
         //List<Double> ExtraMoney =new ArrayList<>();
@@ -226,9 +228,9 @@ public class RoomServiceImpl {
                     if (isInTimeRange(reserve.getStartDate(), uproom.getStartDate(), uproom.getEndDate())
                             && isInTimeRange(reserve.getEndDate(), uproom.getStartDate(), uproom.getEndDate())) {
                         dateflag = 1;
-                        double MoneyEachDay=uproom.getPrice()+uproom.getBFMoney()*reserve.getIsBreakfast();
+                        double MoneyEachDay=uproom.getPrice()+getBFMoney()*reserve.getIsBreakfast();
                         long days=getDaysBetween(reserve.getStartDate(), reserve.getEndDate());
-                        double TotalMoney=MoneyEachDay*days;
+                        double TotalMoney=MoneyEachDay*days-reserve.getPayMoney();
                         //upgradeRooms.add(uproom);
                         //ExtraMoney.add(TotalMoney);
                         upgradeMap.put(uproom,TotalMoney);
@@ -256,7 +258,7 @@ public class RoomServiceImpl {
 
 
     public Map<Room,Double> getDowngradeMap(Reserve reserve) {
-        Map<Room,Double> downgradeMap=new HashMap<>();
+        Map<Room,Double> downgradeMap=new myHashMap<>();
         List<Integer> TypeList = new ArrayList<>(Arrays.asList(0, 1, 2));
         //List<Room> downgradeRooms = new ArrayList<>();
         Hostel hostel = reserve.getRoom().getHostel();
@@ -268,19 +270,19 @@ public class RoomServiceImpl {
             if (type < currType) {
                 typeflag = 1;
                 List<Room> DownRooms = getRoomByType(hostel, type);
-                for (Room uproom : DownRooms) {
-                    if (isInTimeRange(reserve.getStartDate(), uproom.getStartDate(), uproom.getEndDate())
-                            && isInTimeRange(reserve.getEndDate(), uproom.getStartDate(), uproom.getEndDate())) {
+                for (Room downroom : DownRooms) {
+                    if (isInTimeRange(reserve.getStartDate(), downroom.getStartDate(), downroom.getEndDate())
+                            && isInTimeRange(reserve.getEndDate(), downroom.getStartDate(), downroom.getEndDate())) {
                         dateflag = 1;
                         //downgradeRooms.addAll(DownRooms);
                         //System.out.println("Found rooms for downgrade!");
                         //return downgradeRooms;
-                        double MoneyEachDay=uproom.getPrice()+uproom.getBFMoney()*reserve.getIsBreakfast();
+                        double MoneyEachDay=downroom.getPrice()+getBFMoney()*reserve.getIsBreakfast();
                         long days=getDaysBetween(reserve.getStartDate(), reserve.getEndDate());
-                        double TotalMoney=MoneyEachDay*days;
+                        double TotalMoney=reserve.getPayMoney()-MoneyEachDay*days;
                         //upgradeRooms.add(uproom);
                         //ExtraMoney.add(TotalMoney);
-                        downgradeMap.put(uproom,TotalMoney);
+                        downgradeMap.put(downroom,TotalMoney);
                     }
                 }
                 //upgradeRooms.addAll(UpRooms);

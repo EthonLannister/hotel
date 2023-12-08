@@ -33,6 +33,7 @@ public class Reserve {
         this.user = user;
         this.room = room;
         this.payMoney = room.getPrice()+getBFMoney()*IsBreakfast;
+        this.IsBreakfast=IsBreakfast;
         //this.setDates(startDate,endDate);
     }
 
