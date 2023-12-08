@@ -13,6 +13,6 @@ public interface AdminService {
     public void modifyRoomPrice(Room room, double newPrice);
     public void modifyRoomTime(Room room, Timestamp newStart, Timestamp newEnd);
     public void cancelUserReserve(User user, Reserve reserve);
-    public boolean addActivity(Hostel hostel, String actName, Timestamp actTime, int capacity, List<User> actUser);
+    public boolean addActivity(Hostel hostel, String actName, Timestamp actTime, int capacity);
 
 }

@@ -116,9 +116,9 @@ public class AdminServiceImpl implements AdminService{
         user = userService.addBalance(user, refundMoney);
     }
     // 添加活动
-    public boolean addActivity(Hostel hostel, String actName, Timestamp actTime, int capacity, List<User> actUser) {
+    public boolean addActivity(Hostel hostel, String actName, Timestamp actTime, int capacity) {
         HostelServiceImpl hostelService = new HostelServiceImpl();
-        Activity activity = hostelService.addActivity(hostel, actName, actTime, capacity, actUser);
+        Activity activity = hostelService.addActivity(hostel, actName, actTime, capacity);
         if (activity == null) {
             System.out.println("活动添加失败！");
             return false;

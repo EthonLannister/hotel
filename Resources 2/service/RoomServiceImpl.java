@@ -289,9 +289,6 @@ public class RoomServiceImpl {
         int flag = 0;
         for (Activity act : activityList) {
             if (Objects.equals(act.getActName(), activityName) && act.getActUser().size() < act.getCapacity() && !usi.IsDateInHotel(user, act.getActTime())) {
-                // 将预订客户写入文档
-                ActivityInformationReader reader = new ActivityInformationReader();
-                reader.writeActivityToDocument(Collections.singletonList(act), "activity_info.txt");
                 act.addActUser(user);
                 System.out.println("Activity successfully booked!");
                 flag = 1;
@@ -306,6 +303,9 @@ public class RoomServiceImpl {
         if (flag == 0) {
             System.out.println("Sorry,activity doesn't exist");
         }
+        // 将更新后的活动写入文档
+        ActivityInformationReader reader = new ActivityInformationReader();
+        reader.writeActivityToDocument(activityList, "activity_info.txt");
     }
 
 

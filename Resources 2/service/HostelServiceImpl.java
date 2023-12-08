@@ -2,6 +2,7 @@ package edu.nju.hostelworld.service;
 import edu.nju.hostelworld.model.Hostel;
 import edu.nju.hostelworld.model.Room;
 import edu.nju.hostelworld.model.Activity;
+import edu.nju.hostelworld.model.User;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -35,9 +36,10 @@ public class HostelServiceImpl {
         }
     }
 
-    public Activity addActivity(Hostel hostel,Timestamp time,String activityName) {
+    public Activity addActivity(Hostel hostel,String activityName,Timestamp time,int capacity) {
         List<Activity> activityList=hostel.getActivities();
-        Activity activity = new Activity(hostel,activityName,time);
+        List<User> actUser = new ArrayList<>();
+        Activity activity = new Activity(hostel,activityName,time,capacity,actUser);
         activityList.add(activity);
         return activity;
     }
