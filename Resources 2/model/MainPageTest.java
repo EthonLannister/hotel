@@ -1,6 +1,9 @@
 package edu.nju.hostelworld.model;
 
+import edu.nju.hostelworld.service.AdminService;
+import edu.nju.hostelworld.service.AdminServiceImpl;
 import edu.nju.hostelworld.service.HostelServiceImpl;
+import edu.nju.hostelworld.service.RoomServiceImpl;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -10,12 +13,11 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 
-public class MainPage {
+public class MainPageTest {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         boolean loggedIn = false;
         String userType = "";
-
         while (!loggedIn) {
             System.out.println("请选择您的身份（1-用户，2-管理员）：");
             userType = scanner.nextLine();
@@ -26,7 +28,6 @@ public class MainPage {
                 System.out.println("无效的选择！");
             }
         }
-
         while (true) {
             System.out.println("请输入您的ID：");
             String userId = scanner.nextLine();
@@ -100,7 +101,8 @@ public class MainPage {
             System.out.println("1. 预定酒店");
             System.out.println("2. 查看个人信息");
             System.out.println("3. 查看预定记录");
-            System.out.println("4. 退出");
+            System.out.println("4. 参加活动");
+            System.out.println("5. 退出");
             int choice = scanner.nextInt();
             switch (choice) {
                 case 1:
@@ -111,7 +113,6 @@ public class MainPage {
                     int printLevel = scanner.nextInt();
                     hotelReservation(startDate, endDate, printLevel);
 
-
                     break;
                 case 2:
                     System.out.println("进入个人信息页面。");
@@ -120,6 +121,27 @@ public class MainPage {
                     System.out.println("进入预订记录页面。");
                     break;
                 case 4:
+                    System.out.println("进入参加活动页面。");
+                    AdminService ads1 = new AdminServiceImpl();
+                    RoomServiceImpl rs1 = new RoomServiceImpl();
+                    Activity.ActivityInformationReader reader = new Activity.ActivityInformationReader();
+                    List<Activity> activityList = reader.readActivityInformation("activity_info.txt");
+                    // 打印活动信息以进行测试
+                    for (Activity activity : activityList) {
+                        System.out.print("Activity Name: " + activity.getActName()+"  ");
+                        System.out.print("Activity Time: " + activity.getActTime()+"  ");
+                        System.out.print("Capacity: " + activity.getCapacity()+"  ");
+                        System.out.print("Participants: ");
+                        for (User user1 : activity.getActUser()) {
+                            System.out.print(" "+user1.getId());
+                        }
+                        System.out.println();
+                    }
+                    System.out.println("Please enter the activity name: ");
+                    String actName = scanner.next();
+                    rs1.addParticipant(actName, user);
+                    return;
+                case 5:
                     return;
                 default:
                     System.out.println("输入无效，请重新选择。");
@@ -221,3 +243,4 @@ public class MainPage {
     }
 
 }
+

@@ -111,16 +111,16 @@ public class Main {
         System.out.println("\n");
 
         //key 测试活动
-        Activity ac1=hs1.addActivity(hostelTest,DateTrans.string2time("2023-12-01 08:00:00"),"Hiking");
-        Activity ac2=hs1.addActivity(hostelTest,DateTrans.string2time("2023-12-01 08:00:00"),"Biking");
-        rm1.addParticipant(hostelTest,"Hiking",user1);
-        rm1.addParticipant(hostelTest,"Hiking",user2);
-        rm1.addParticipant(hostelTest,"Hiking",user3);
-        rm1.addParticipant(hostelTest,"Ciking",user3);
-        rm1.addParticipant(hostelTest,"Biking",user3);
+        //Activity ac1=hs1.addActivity(hostelTest,"Hiking",DateTrans.string2time("2023-12-01 08:00:00"),3,actUser);
+        //Activity ac2=hs1.addActivity(hostelTest,DateTrans.string2time("2023-12-01 08:00:00"),"Biking");
+        rm1.addParticipant("Hiking",user1);
+        rm1.addParticipant("Hiking",user2);
+        rm1.addParticipant("Hiking",user3);
+        rm1.addParticipant("Ciking",user3);
+        rm1.addParticipant("Biking",user3);
         System.out.println("\n");
-        System.out.println(ac1);
-        System.out.println(ac2);
+        //System.out.println(ac1);
+        //System.out.println(ac2);
         //todo 增加日期校验
         //key 写好了
 

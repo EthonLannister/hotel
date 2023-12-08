@@ -1,6 +1,9 @@
 package edu.nju.hostelworld.model;
 
+import java.io.*;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class User {
@@ -29,8 +32,13 @@ public class User {
         this.password = password;
         this.setReserves(new ArrayList<>());
         this.setReservedDates();
-        this.status = 0;
-        //this.cardId = cardId;
+    }
+    public User(String id, String username, String password, int status, double balance) {
+        this.id = id;
+        this.username = username;
+        this.password = password;
+        this.status = status;
+        this.balance = balance;
     }
     public User(){}
 
@@ -144,6 +152,49 @@ public class User {
 
     public Map<Timestamp, Timestamp> getReservedDates() {
         return ReservedDates;
+    }
+
+    public static class UserInformationReader {
+        // 读取文档
+        public static List<User> readUserInformation(String filePath) {
+            List<User> users = new ArrayList<>();
+            try {
+                File file = new File(filePath);
+                Scanner scanner = new Scanner(file);
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+                    String[] data = line.split(",");
+                    String userId = data[0].trim();
+                    String userName = data[1].trim();
+                    String password = data[2].trim();
+                    int status = Integer.parseInt(data[3].trim());
+                    double balance = Double.parseDouble(data[4].trim());
+                    User user = new User(userId, userName, password, status, balance);
+                    users.add(user);
+                }
+                scanner.close();
+            } catch (FileNotFoundException e) {
+                System.out.println("文件不存在或无法读取！");
+                e.printStackTrace();
+            }
+            return users;
+        }
+        public void writeUserToDocument(List<User> users, String fileName) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
+                for(User user : users){
+                    writer.write(user.getId()+",");
+                    writer.write(user.getUsername()+",");
+                    writer.write(user.getPassword()+",");
+                    writer.write(String.valueOf(user.getStatus()));
+                    writer.write(String.valueOf(user.getBalance()));
+                    writer.newLine();
+                }
+                System.out.println("客户信息已保存到文档" + fileName);
+            } catch (IOException e) {
+                System.out.println("保存文档时出错：" + e.getMessage());
+            }
+        }
+
     }
 
 }

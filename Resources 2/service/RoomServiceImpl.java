@@ -283,28 +283,55 @@ public class RoomServiceImpl {
         return downgradeRooms;
     }
 
-    public void addParticipant(Hostel hostel, String activityName, User user) {
+    public void addParticipant(String activityName, User user) {
         UserServiceImpl usi = new UserServiceImpl();
-        List<Activity> activityList = hostel.getActivities();
+        ActivityInformationReader reader = new ActivityInformationReader();
+        List<Activity> activityList = reader.readActivityInformation("activity_info.txt");
         int flag = 0;
+        boolean isVipUser = (user.getStatus() == 1); // 检查用户是否为VIP客户
+        Activity targetActivity = null;
         for (Activity act : activityList) {
-            if (Objects.equals(act.getActName(), activityName) && act.getActUser().size() < act.getCapacity() && !usi.IsDateInHotel(user, act.getActTime())) {
-                act.addActUser(user);
-                System.out.println("Activity successfully booked!");
-                flag = 1;
-            } else if (Objects.equals(act.getActName(), activityName) && act.getActUser().size() >= act.getCapacity()) {
-                System.out.println("Sorry, this activity is full");
-                flag = 1;
-            } else if (Objects.equals(act.getActName(), activityName) && act.getActUser().size() < act.getCapacity() && usi.IsDateInHotel(user, act.getActTime())) {
-                System.out.println("Sorry,you're not in hotel at this time");
-                flag = 1;
+            if (act.getActName().equals(activityName)) {
+                targetActivity = act; // 找到目标活动
+                if (act.getActUser().size() <= act.getCapacity() && !usi.IsDateInHotel(user, act.getActTime())) {
+                    act.addActUser(user);
+                    act.setCapacity(act.getCapacity() - 1); // 活动容量减一
+                    System.out.println("Activity successfully booked!");
+                    flag = 1;
+                } else if (act.getCapacity() == 0) {
+                    if (isVipUser) {
+                        // VIP客户有优先权，即使活动已满也可以参加
+                        act.addActUser(user);
+                        System.out.println("Activity successfully booked for VIP customer!");
+                        flag = 1;
+                        break; // VIP客户参加后直接跳出循环
+                    }else {
+                        System.out.println("Sorry, this activity is full");
+                        flag = 1;
+                    }
+                } else if (usi.IsDateInHotel(user, act.getActTime())) {
+                    System.out.println("Sorry, you're not in the hotel at this time");
+                    flag = 1;
+                }
             }
         }
+
         if (flag == 0) {
-            System.out.println("Sorry,activity doesn't exist");
+            System.out.println("Sorry, activity doesn't exist");
+        }
+        if (targetActivity != null) {
+            // 移除最后一个非VIP客户
+            if (isVipUser && targetActivity.getActUser().size() > targetActivity.getCapacity()) {
+                for (int i = targetActivity.getActUser().size() - 1; i >= 0; i--) {
+                    if (targetActivity.getActUser().get(i).getStatus() != 1) {
+                        targetActivity.getActUser().remove(i); // 删除最后一个非VIP客户
+                        System.out.println("Last non-VIP participant removed from the activity.");
+                        break;
+                    }
+                }
+            }
         }
         // 将更新后的活动写入文档
-        ActivityInformationReader reader = new ActivityInformationReader();
         reader.writeActivityToDocument(activityList, "activity_info.txt");
     }
 

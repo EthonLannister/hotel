@@ -5,9 +5,6 @@ import edu.nju.hostelworld.model.User;
 import java.sql.Timestamp;
 import java.util.List;
 
-/**
- * Created by yyy on 2017/3/10.
- */
 public interface UserService {
 
     //User saveUser(User user);

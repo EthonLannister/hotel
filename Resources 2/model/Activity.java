@@ -133,7 +133,7 @@ public class Activity {
                 return null;
             }
         }
-        // 将活动信息保存到名为activity_todo.txt的文件中
+        // 将活动信息保存到名为activity_info.txt的文件中
         public void writeActivityToDocument(List<Activity> activities, String fileName) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(fileName))) {
                 for(Activity activity : activities){
